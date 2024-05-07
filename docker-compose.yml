@@ -1,24 +1,25 @@
-version: '3.3'
-
 services:
   postgres:
     build:
       context: .
       dockerfile: Dockerfile.db
     ports:
-      - 5432:5432
+       - 54:54
 
   redis:
     image: redis:alpine
+    security_opt: 
+       - no-new-privileges=true
+    read_only: true
 
   sqli:
     build:
       context: .
       dockerfile: Dockerfile.app
     depends_on:
-      - postgres
-      - redis
+       - postgres
+       - redis
     ports:
-      - 8080:8080
-    command: |
-      wait-for postgres:5432 -- python run.py
+       - 80:80
+    command: | 
+      wait-for postgres:54 -- python run.py
