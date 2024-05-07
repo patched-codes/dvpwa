@@ -2,7 +2,6 @@ from typing import Optional, NamedTuple
 
 from aiopg.connection import Connection
 
-
 class Student(NamedTuple):
     id: int
     name: str
@@ -14,10 +13,7 @@ class Student(NamedTuple):
     @staticmethod
     async def get(conn: Connection, id_: int):
         async with conn.cursor() as cur:
-            await cur.execute(
-                'SELECT id, name FROM students WHERE id = %s',
-                (id_,),
-            )
+            await cur.execute('SELECT id, name FROM students WHERE id = %s', (f"{id_}",))
             r = await cur.fetchone()
             return Student.from_raw(r)
 
@@ -27,21 +23,19 @@ class Student(NamedTuple):
         q = 'SELECT id, name FROM students'
         params = {}
         if limit is not None:
-            q += ' LIMIT + %(limit)s '
+            q += ' LIMIT %s '
             params['limit'] = limit
         if offset is not None:
-            q += ' OFFSET + %(offset)s '
+            q += ' OFFSET %s '
             params['offset'] = offset
         async with conn.cursor() as cur:
-            await cur.execute(q, params)
+            await cur.execute(q, params.values())
             results = await cur.fetchall()
             return [Student.from_raw(r) for r in results]
 
     @staticmethod
     async def create(conn: Connection, name: str):
         q = ("INSERT INTO students (name) "
-             "VALUES ('%(name)s')" % {'name': name})
+             "VALUES (%(name)s)")
         async with conn.cursor() as cur:
-            await cur.execute(q)
-
-
+            await cur.execute(q, {'name': name})
