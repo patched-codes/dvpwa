@@ -1,8 +1,6 @@
-from hashlib import md5
+from hashlib import scrypt
 from typing import NamedTuple, Optional
-
 from aiopg import Connection
-
 
 class User(NamedTuple):
     id: int
@@ -38,4 +36,5 @@ class User(NamedTuple):
             return User.from_raw(await cur.fetchone())
 
     def check_password(self, password: str):
-        return self.pwd_hash == md5(password.encode('utf-8')).hexdigest()
+        salt = self.pwd_hash.split('$')[1]
+        return scrypt(password.encode('utf-8'), salt.encode('utf-8'), 8192).hexdigest() == self.pwd_hash.split('$')[2]

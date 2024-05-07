@@ -562,7 +562,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
         }, addClass: function (e, t) {
           e.classList ? e.classList.add(t) : e.className += (e.className.length ? " " : "") + t;
         }, removeClass: function (e, t) {
-          e.classList ? e.classList.remove(t) : e.className = e.className.toString().replace(new RegExp("(^|\\s)" + t.split(" ").join("|") + "(\\s|$)", "gi"), " ");
+          e.classList ? e.classList.remove(t) : e.className = e.className.toString().replace(/(^|\s)/gims, " ").replace(new RegExp(t.split(" ").join("|"), "gi"), " "); 
         } }, getPropertyValue: function (e, r, n, o) {
         function s(e, r) {
           function n() {
@@ -642,7 +642,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
               }), b.CSS.setPropertyValue(u, "position", e.position), b.CSS.setPropertyValue(u, "fontSize", e.fontSize), b.CSS.setPropertyValue(u, "boxSizing", "content-box"), f.each(["minWidth", "maxWidth", "width", "minHeight", "maxHeight", "height"], function (e, t) {
                 b.CSS.setPropertyValue(u, t, s + "%");
               }), b.CSS.setPropertyValue(u, "paddingLeft", s + "em"), l.percentToPxWidth = L.lastPercentToPxWidth = (parseFloat(S.getPropertyValue(u, "width", null, !0)) || 1) / s, l.percentToPxHeight = L.lastPercentToPxHeight = (parseFloat(S.getPropertyValue(u, "height", null, !0)) || 1) / s, l.emToPx = L.lastEmToPx = (parseFloat(S.getPropertyValue(u, "paddingLeft")) || 1) / s, e.myParent.removeChild(u);
-            }return null === L.remToPx && (L.remToPx = parseFloat(S.getPropertyValue(r.body, "fontSize")) || 16), null === L.vwToPx && (L.vwToPx = parseFloat(t.innerWidth) / 100, L.vhToPx = parseFloat(t.innerHeight) / 100), l.remToPx = L.remToPx, l.vwToPx = L.vwToPx, l.vhToPx = L.vhToPx, b.debug >= 1 && console.log("Unit ratios: " + JSON.stringify(l), o), l;
+             }return null === L.remToPx && (L.remToPx = parseFloat(S.getPropertyValue(r.body, "fontSize")) || 16), null === L.vwToPx && (L.vwToPx = parseFloat(t.innerWidth) / 100, L.vhToPx = parseFloat(t.innerHeight) / 100), l.remToPx = L.remToPx, l.vwToPx = L.vwToPx, l.vhToPx = L.vhToPx, b.debug >= 1 && console.log(`Unit ratios: ${JSON.stringify(l)}`, o), l;
           }if (s.begin && 0 === V) try {
             s.begin.call(g, g);
           } catch (x) {
@@ -696,7 +696,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
                     q = M + q;break;case "-":
                     q = M - q;break;case "*":
                     q = M * q;break;case "/":
-                    q = M / q;}l[z] = { rootPropertyValue: B, startValue: M, currentValue: M, endValue: q, unitType: G, easing: $ }, b.debug && console.log("tweensContainer (" + z + "): " + JSON.stringify(l[z]), o);
+                    q = M / q;}l[z] = { rootPropertyValue: B, startValue: M, currentValue: M, endValue: q, unitType: G, easing: $ }, b.debug && console.log(`tweensContainer (${z}): ${JSON.stringify(l[z])}`, o);
               } else b.debug && console.log("Skipping [" + I + "] due to a lack of browser support.");
             }l.element = o;
           }l.element && (S.Values.addClass(o, "velocity-animating"), R.push(l), "" === s.queue && (i(o).tweensContainer = l, i(o).opts = s), i(o).isAnimating = !0, V === w - 1 ? (b.State.calls.push([R, g, s, null, k.resolver]), b.State.isTicking === !1 && (b.State.isTicking = !0, c())) : V++);
@@ -3441,7 +3441,7 @@ if (jQuery) {
 
           // Insert as text;
         } else {
-          toast.innerHTML = this.message;
+          toast.textContent = this.message;
         }
 
         // Append toasft
