@@ -562,7 +562,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
         }, addClass: function (e, t) {
           e.classList ? e.classList.add(t) : e.className += (e.className.length ? " " : "") + t;
         }, removeClass: function (e, t) {
-          e.classList ? e.classList.remove(t) : e.className = e.className.toString().replace(new RegExp("(^|\\s)" + t.split(" ").join("|") + "(\\s|$)", "gi"), " ");
+          e.classList ? e.classList.remove(t) : e.className = e.className.toString().replace((/^|\s)/ + t.split(" ").join("|") + (\s|$)/gi, " ");
         } }, getPropertyValue: function (e, r, n, o) {
         function s(e, r) {
           function n() {
@@ -3441,7 +3441,7 @@ if (jQuery) {
 
           // Insert as text;
         } else {
-          toast.innerHTML = this.message;
+          toast.textContent = this.message;
         }
 
         // Append toasft
