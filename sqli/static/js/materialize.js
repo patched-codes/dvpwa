@@ -5914,16 +5914,33 @@ if (jQuery) {
     }
   };
 
-  var closeFABMenu = function (btn) {
-    var $this = btn;
+  const closeFABMenu = function (btn) {
+    const $this = $(btn);
     // Get direction option
-    var horizontal = $this.hasClass('horizontal');
-    var offsetY, offsetX;
+    const horizontal = $this.hasClass('horizontal');
+    let offsetY, offsetX;
 
     if (horizontal === true) {
       offsetX = 40;
     } else {
       offsetY = 40;
+    }
+
+    try {
+      if (horizontal === true) {
+        $this.find('ul .btn-floating').velocity(
+          { translateY: 0, translateX: offsetX },
+          { duration: 0 }
+        );
+      } else {
+        $this.find('ul .btn-floating').velocity(
+          { translateY: offsetY, translateX: 0 },
+          { duration: 0 }
+        );
+      }
+    } catch (error) {
+      console.error('Error in closeFABMenu:', error);
+    }
     }
 
     $this.removeClass('active');
@@ -5988,7 +6005,8 @@ if (jQuery) {
         transition: 'transform .2s'
       });
 
-      setTimeout(function () {
+      const ANIMATION_DELAY = 100;
+      const animateMenu = () => {
         btn.css({
           overflow: 'hidden',
           'background-color': fabColor
@@ -5998,6 +6016,10 @@ if (jQuery) {
           transition: 'transform .2s cubic-bezier(0.550, 0.055, 0.675, 0.190)'
         });
         menu.find('> li > a').css({
+      };
+      
+      // Use requestAnimationFrame for better performance and to avoid potential race conditions
+      requestAnimationFrame(animateMenu);
           opacity: 1
         });
 
