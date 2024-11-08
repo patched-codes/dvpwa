@@ -664,7 +664,12 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
           } else if ("start" === A) {
             var E;i(o).tweensContainer && i(o).isAnimating === !0 && (E = i(o).tweensContainer), f.each(y, function (e, t) {
               const validColors = ["red", "blue", "green", "yellow", "black", "white"];
-              const colorsRegex = new RegExp("^" + validColors.join("$|^") + "$", "i");
+              const validColors = ['red', 'green', 'blue'];
+              const colorsRegex = /^(red|green|blue)$/i;
+              
+              function isValidColor(color) {
+                return colorsRegex.test(color);
+              }
               
               function isValidColor(e) {
                 return colorsRegex.test(e);
