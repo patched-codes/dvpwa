@@ -1,7 +1,8 @@
-from hashlib import md5
 from typing import NamedTuple, Optional
-
 from aiopg import Connection
+from cryptography.hazmat.primitives.kdf.argon2 import Argon2id
+from cryptography.hazmat.primitives.kdf.argon2 import PasswordHasher
+from cryptography.exceptions import InvalidKey
 
 
 class User(NamedTuple):
@@ -38,4 +39,9 @@ class User(NamedTuple):
             return User.from_raw(await cur.fetchone())
 
     def check_password(self, password: str):
-        return self.pwd_hash == md5(password.encode('utf-8')).hexdigest()
+        ph = PasswordHasher()
+        try:
+            ph.verify(self.pwd_hash, password)
+            return True
+        except InvalidKey:
+            return False
