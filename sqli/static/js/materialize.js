@@ -5889,6 +5889,11 @@ if (jQuery) {
     }
   });
 
+  /**
+   * Opens or activates a Floating Action Button (FAB) menu.
+   * @param {Object} btn - The jQuery object representing the FAB button.
+   * @returns {void} This function does not return a value.
+   */
   var openFABMenu = function (btn) {
     var $this = btn;
     if ($this.hasClass('active') === false) {
@@ -5914,6 +5919,11 @@ if (jQuery) {
     }
   };
 
+  /**
+   * Closes the FAB (Floating Action Button) menu with animation
+   * @param {Object} btn - The jQuery object representing the FAB button
+   * @returns {void} This function does not return a value
+   */
   var closeFABMenu = function (btn) {
     var $this = btn;
     // Get direction option
@@ -5977,6 +5987,16 @@ if (jQuery) {
       'background-color': fabColor
     });
 
+    /**
+     * Animates the transition of a Floating Action Button (FAB) to a toolbar and sets up event listeners for closing.
+     * @param {jQuery} btn - The jQuery object representing the FAB button
+     * @param {jQuery} anchor - The jQuery object representing the anchor element
+     * @param {jQuery} backdrop - The jQuery object representing the backdrop element
+     * @param {jQuery} menu - The jQuery object representing the menu element
+     * @param {number} scaleFactor - The scale factor for the backdrop transformation
+     * @param {string} fabColor - The background color for the FAB button
+     * @returns {void} This method does not return a value
+     */
     setTimeout(function () {
       btn.css({
         transform: '',
@@ -6092,6 +6112,17 @@ if (jQuery) {
     }, 200);
   };
 })(jQuery);
+/**
+ * Fades in an image element with a smooth transition effect.
+ * @param {string|object} selectorOrEl - A CSS selector string or a DOM element
+ * @returns {void} This method does not return a value
+ */
+
+/**
+ * Animates a list with a staggered horizontal slide-in effect.
+ * @param {string|object} selectorOrEl - A CSS selector string or a DOM element
+ * @returns {void} This method does not return a value
+ */
 ;(function ($) {
   // Image transition function
   Materialize.fadeInImage = function (selectorOrEl) {
@@ -6261,6 +6292,30 @@ if (jQuery) {
 
   // Input: Array of JSON objects {selector, offset, callback}
   Materialize.scrollFire = function (options) {
+    /**
+     * Handles scroll events and triggers callbacks for elements when they come into view.
+     * This function iterates through a list of options, each containing a selector,
+     * offset, and callback. When an element matching the selector comes into view
+     * (considering the offset), the associated callback is executed.
+     *
+     * @param {undefined} No parameters are explicitly passed to this function.
+     * @returns {undefined} This function does not return a value.
+     *
+     * @global
+     * @function
+     * @name onScroll
+     *
+     * @requires options An array of objects, each containing:
+     *           {string} selector - A CSS selector for the target element.
+     *           {number} offset - An offset value to adjust when the callback triggers.
+     *           {function|string} callback - A function or string to be executed when the element is in view.
+     *
+     * @throws {TypeError} May throw a TypeError if the callback is neither a function nor a string.
+     *
+     * @example
+     * // Assuming 'options' is defined:
+     * window.addEventListener('scroll', onScroll);
+     */
     var onScroll = function () {
       var windowScroll = window.pageYOffset + window.innerHeight;
 
@@ -6311,6 +6366,11 @@ if (jQuery) {
   * Licensed under MIT
   */
 
+/**
+ * Factory function to create the Materialize.Picker object
+ * @param {Function} factory - A factory function that receives jQuery as an argument
+ * @returns {void} This function does not return a value, it assigns the result to Materialize.Picker
+ */
 (function (factory) {
 
   Materialize.Picker = factory(jQuery);
@@ -6542,6 +6602,21 @@ if (jQuery) {
               // keep the element focused to maintain tabindex.
               P.close(target === P.$root.children()[0]);
             }
+          /**
+           * Handles keydown events for a picker component
+           * @param {Event} event - The keydown event object
+           * @returns {undefined} This method doesn't return a value
+           *
+           * This method attaches a keydown event handler to the picker component.
+           * It processes various key presses to control the picker's behavior:
+           * - Escape key (27): Closes the picker and gives focus
+           * - Arrow keys: Triggers movement within the picker
+           * - Enter key (13): Sets the selected value and optionally closes the picker
+           * 
+           * The method also prevents default actions for certain key presses to avoid
+           * unintended page movements. For targets within the root element, it simulates
+           * a click on Enter key press.
+           */
           }).on('keydown.' + STATE.id, function (event) {
 
             var
@@ -6796,6 +6871,11 @@ if (jQuery) {
        * Fire off method events.
        */
       trigger: function (name, data) {
+        /**
+         * Triggers a list of methods associated with a given name.
+         * @param {string} name - The name of the method list to trigger.
+         * @returns {undefined} This function does not return a value.
+         */
         var _trigger = function (name) {
           var methodList = STATE.methods[name];
           if (methodList) {
@@ -7303,6 +7383,13 @@ if (jQuery) {
   }; //PickerConstructor.extend
 
 
+  /**
+   * Sets ARIA attributes on an HTML element
+   * @param {HTMLElement} element - The HTML element to set ARIA attributes on
+   * @param {string|Object} attribute - Either a string specifying a single ARIA attribute name, or an object containing multiple attribute-value pairs
+   * @param {string} [value] - The value to set for the ARIA attribute (only used when 'attribute' is a string)
+   * @returns {undefined} This function does not return a value
+   */
   function aria(element, attribute, value) {
     if ($.isPlainObject(attribute)) {
       for (var key in attribute) {
@@ -7315,6 +7402,12 @@ if (jQuery) {
   function ariaSet(element, attribute, value) {
     element.setAttribute((attribute == 'role' ? '' : 'aria-') + attribute, value);
   }
+  /**
+   * Generates ARIA attribute string from given attribute object or key-value pair.
+   * @param {Object|string} attribute - An object of ARIA attributes and their values, or a single attribute name.
+   * @param {*} [data] - The value for the attribute if the first parameter is a string.
+   * @returns {string} A string of ARIA attributes ready to be inserted into an HTML tag.
+   */
   function ariaAttr(attribute, data) {
     if (!$.isPlainObject(attribute)) {
       attribute = { attribute: data };
@@ -7343,6 +7436,11 @@ if (jQuery) {
   * http://amsul.github.io/pickadate.js/date.htm
   */
 
+/**
+ * Factory function for creating a Materialize Picker instance
+ * @param {Function} factory - A function that takes Materialize.Picker and jQuery as arguments
+ * @returns {void} This function does not return a value
+ */
 (function (factory) {
   factory(Materialize.Picker, jQuery);
 })(function (Picker, $) {
@@ -7365,6 +7463,10 @@ if (jQuery) {
         elementDataValue = picker.$node.data('value'),
         valueString = elementDataValue || elementValue,
         formatString = elementDataValue ? settings.formatSubmit : settings.format,
+        /**
+         * Determines if the text direction is right-to-left (RTL)
+         * @returns {boolean} True if the text direction is RTL, false otherwise
+         */
         isRTL = function () {
 
       return element.currentStyle ?
@@ -7395,6 +7497,11 @@ if (jQuery) {
 
     calendar.item.clear = null;
     calendar.item.disable = (settings.disable || []).slice(0);
+    /**
+     * Checks if the calendar item is enabled based on the disable collection.
+     * @param {Array} collectionDisabled - An array representing disabled items in the calendar.
+     * @returns {number} Returns -1 if the calendar item is enabled, or true if it's disabled.
+     */
     calendar.item.enable = -function (collectionDisabled) {
       return collectionDisabled[0] === true ? collectionDisabled.shift() : -1;
     }(calendar.item.disable);
@@ -7564,6 +7671,13 @@ if (jQuery) {
   DatePicker.prototype.createRange = function (from, to) {
 
     var calendar = this,
+        /**
+         * Creates a date object or returns the input if it's already a valid date.
+         * @param {boolean|Array|Date|*} date - The input to be converted to a date.
+         *                                      If true, an array, or a Date object, it will be converted.
+         *                                      Otherwise, the input will be returned as-is.
+         * @returns {Date|*} A Date object if the input was converted, or the original input if not.
+         */
         createDate = function (date) {
       if (date === true || $.isArray(date) || _.isDate(date)) {
         return calendar.create(date);
@@ -7944,6 +8058,12 @@ if (jQuery) {
 
     return {
 
+      /**
+       * Retrieves the day of the month from a string or date object.
+       * @param {string|undefined} string - A string containing digits representing the day of the month. If undefined, the date will be retrieved from the dateObject.
+       * @param {Object} dateObject - An object containing a date property.
+       * @returns {number} The day of the month as a number.
+       */
       d: function (string, dateObject) {
 
         // If there's string, then get the digits length.
@@ -7956,6 +8076,12 @@ if (jQuery) {
         // Otherwise return the selected date with a leading zero.
         return string ? 2 : _.lead(dateObject.date);
       },
+      /**
+       * Determines the length of the first word in a string or returns the short weekday name.
+       * @param {string} string - The input string to process. If provided, the function will return the length of its first word.
+       * @param {Object} dateObject - An object representing a date, containing a 'day' property.
+       * @returns {number|string} If a string is provided, returns the length of its first word. Otherwise, returns the short name of the weekday from the date object.
+       */
       ddd: function (string, dateObject) {
 
         // If there's a string, then get the length of the first word.
@@ -7968,6 +8094,12 @@ if (jQuery) {
         // Otherwise return the full selected weekday.
         return string ? getFirstWordLength(string) : this.settings.weekdaysFull[dateObject.day];
       },
+      /**
+       * Handles string or date object input to return either the length of digits in a string or the month of a date object.
+       * @param {string|Object} string - The input string containing digits, or undefined if using dateObject.
+       * @param {Object} dateObject - The date object to extract the month from, or undefined if using string.
+       * @returns {number} The length of digits in the input string, or the month (1-indexed) from the date object.
+       */
       m: function (string, dateObject) {
 
         // If there's a string, then get the length of the digits
@@ -7980,6 +8112,12 @@ if (jQuery) {
         // Otherwise return the selected month with 0index and leading zero.
         return string ? 2 : _.lead(dateObject.month + 1);
       },
+      /**
+       * Returns the short month name or its length based on the input.
+       * @param {string} string - The input string to match against month names (optional).
+       * @param {Date} dateObject - The date object containing the month information.
+       * @returns {string|number} Either the short month name or the length of the matching month name.
+       */
       mmm: function (string, dateObject) {
 
         var collection = this.settings.monthsShort;
@@ -7996,6 +8134,12 @@ if (jQuery) {
         // months collection. Otherwise return the selected month from that collection.
         return string ? getWordLengthFromCollection(string, collection, dateObject) : collection[dateObject.month];
       },
+      /**
+       * Formats the year as a two-digit string
+       * @param {string|undefined} string - If provided, indicates that a two-digit year should be returned
+       * @param {Object} dateObject - An object containing the full year
+       * @returns {string} A two-digit representation of the year
+       */
       yy: function (string, dateObject) {
 
         // If there's a string, then the length is always 2.
@@ -8017,6 +8161,13 @@ if (jQuery) {
       // Format an object into a string using the formatting options.
       toString: function (formatString, itemObject) {
         var calendar = this;
+        /**
+         * Formats a calendar item object into a string based on the provided format string.
+         * @param {string} formatString - The format string specifying how to format the calendar item.
+         * @param {Object} itemObject - The calendar item object to be formatted.
+         * @param {Object} calendar - The calendar object containing formatting functions.
+         * @returns {string} A formatted string representing the calendar item.
+         */
         return calendar.formats.toArray(formatString).map(function (label) {
           return _.trigger(calendar.formats[label], calendar, [0, itemObject]) || label.replace(/^!/, '');
         }).join('');
@@ -8106,6 +8257,13 @@ if (jQuery) {
     // Otherwise go through the dates to disable.
     else {
 
+        /**
+         * Filters and adds disabled dates to the disabledItems collection.
+         * @param {Array} datesToDisable - An array of dates or date ranges to be disabled.
+         * @param {Array} disabledItems - The collection of already disabled items.
+         * @param {Object} calendar - The calendar object with utility functions.
+         * @returns {void} This method doesn't return a value, it modifies the disabledItems array in place.
+         */
         datesToDisable.map(function (unitToDisable) {
 
           var matchFound;
@@ -8156,6 +8314,17 @@ if (jQuery) {
     // Otherwise go through the disabled dates.
     else {
 
+        /**
+         * Processes a collection of dates to enable, updating the disabledItems array.
+         * This method maps through the datesToEnable array, comparing each date with the
+         * disabledItems to find exact matches or overlaps. It then updates the disabledItems
+         * array accordingly, removing exact matches and marking overlaps as inverted.
+         * 
+         * @param {Array} datesToEnable - An array of date units to be enabled
+         * @param {Array} disabledItems - An array of currently disabled date items
+         * @param {Object} calendar - An object containing calendar utility functions
+         * @returns {void} This method does not return a value, it modifies the disabledItems array in place
+         */
         datesToEnable.map(function (unitToEnable) {
 
           var matchFound, disabledUnit, index, isExactRange;
@@ -8251,6 +8420,14 @@ if (jQuery) {
         max: DAYS_IN_WEEK - 1,
         i: 1,
         node: 'th',
+        /**
+         * Generates an array with specific elements based on the given counter.
+         * @param {number} counter - The index used to access elements from collections.
+         * @returns {Array} An array containing three elements:
+         *   1. The element from the 'collection' array at the specified counter index.
+         *   2. The 'weekdays' property from the 'settings.klass' object.
+         *   3. A string containing HTML attributes for a table column, including the full collection item as a title.
+         */
         item: function (counter) {
           return [collection[counter], settings.klass.weekdays, 'scope=col title="' + fullCollection[counter] + '"'];
         }
@@ -8295,6 +8472,11 @@ if (jQuery) {
           max: 11,
           i: 1,
           node: 'option',
+          /**
+           * Generates an array representing a month option for a date picker
+           * @param {number} loopedMonth - The month index being processed
+           * @returns {Array} An array containing the month name, number of classes, and HTML attributes
+           */
           item: function (loopedMonth) {
 
             return [
@@ -8386,6 +8568,10 @@ if (jQuery) {
     createDayLabel = function () {
       if (selectedObject != null) return selectedObject.date;else return nowObject.date;
     };
+    /**
+     * Creates a weekday label based on the selected day or current day
+     * @returns {string} The abbreviated name of the weekday
+     */
     createWeekdayLabel = function () {
       var display_day;
 
@@ -8411,6 +8597,11 @@ if (jQuery) {
       max: WEEKS_IN_CALENDAR - 1,
       i: 1,
       node: 'tr',
+      /**
+       * Generates an array of table cells representing a week in a calendar view.
+       * @param {number} rowCounter - The index of the current week row being generated.
+       * @returns {Array} An array containing a single element, which is a group of table cells for the week.
+       */
       item: function (rowCounter) {
 
         // If Monday is the first day and the month starts on Sunday, shift the date back a week.
@@ -8576,6 +8767,119 @@ if (jQuery) {
   * Copyright 2015 Ching Yaw Hao.
   */
 
+/**
+ * Creates a ClockPicker instance for time selection
+ * @param {HTMLElement|jQuery} element - The DOM element or jQuery object to attach the ClockPicker to
+ * @param {Object} options - Configuration options for the ClockPicker
+ * @returns {ClockPicker} A new ClockPicker instance
+ */
+function ClockPicker(element, options) {
+  // ... implementation details ...
+}
+
+/**
+ * Default options for the ClockPicker
+ * @type {Object}
+ */
+ClockPicker.DEFAULTS = {
+  'default': '', // default time, 'now' or '13:14' e.g.
+  fromnow: 0, // set default time to * milliseconds from now (using with default = 'now')
+  donetext: 'Ok', // done button text
+  cleartext: 'Clear',
+  canceltext: 'Cancel',
+  autoclose: false, // auto close when minute is selected
+  ampmclickable: true, // set am/pm button on itself
+  darktheme: false, // set to dark theme
+  twelvehour: true, // change to 12 hour AM/PM clock from 24 hour
+  vibrate: true // vibrate the device when dragging clock hand
+};
+
+/**
+ * Toggle the visibility of the ClockPicker popover
+ */
+ClockPicker.prototype.toggle = function() {
+  // ... implementation details ...
+};
+
+/**
+ * Set the position of the ClockPicker popover
+ */
+ClockPicker.prototype.locate = function() {
+  // ... implementation details ...
+};
+
+/**
+ * Show the ClockPicker popover
+ * @param {Event} e - The event that triggered the show action
+ */
+ClockPicker.prototype.show = function(e) {
+  // ... implementation details ...
+};
+
+/**
+ * Hide the ClockPicker popover
+ */
+ClockPicker.prototype.hide = function() {
+  // ... implementation details ...
+};
+
+/**
+ * Toggle between hours and minutes view
+ * @param {string} view - The view to switch to ('hours' or 'minutes')
+ * @param {number} delay - The delay in milliseconds before switching views
+ */
+ClockPicker.prototype.toggleView = function(view, delay) {
+  // ... implementation details ...
+};
+
+/**
+ * Reset the clock hand position
+ * @param {number} delay - The delay in milliseconds before resetting
+ */
+ClockPicker.prototype.resetClock = function(delay) {
+  // ... implementation details ...
+};
+
+/**
+ * Set the clock hand to a specific position
+ * @param {number} x - The x-coordinate of the hand position
+ * @param {number} y - The y-coordinate of the hand position
+ * @param {boolean} roundBy5 - Whether to round the minutes to the nearest 5
+ * @param {boolean} dragging - Whether the hand is being dragged
+ */
+ClockPicker.prototype.setHand = function(x, y, roundBy5, dragging) {
+  // ... implementation details ...
+};
+
+/**
+ * Finalize the time selection
+ */
+ClockPicker.prototype.done = function() {
+  // ... implementation details ...
+};
+
+/**
+ * Clear the selected time
+ */
+ClockPicker.prototype.clear = function() {
+  // ... implementation details ...
+};
+
+/**
+ * Remove the ClockPicker from the input
+ */
+ClockPicker.prototype.remove = function() {
+  // ... implementation details ...
+};
+
+/**
+ * jQuery plugin to create a ClockPicker
+ * @param {Object|string} option - The options object or method name
+ * @returns {jQuery} The jQuery object for chaining
+ */
+$.fn.pickatime = function(option) {
+  // ... implementation details ...
+};
 (function () {
   var $ = window.jQuery,
       $win = $(window),
@@ -9209,6 +9513,12 @@ if (jQuery) {
 })();
 ;(function ($) {
 
+  /**
+   * Adds a character counter to input elements with a 'data-length' attribute.
+   * The counter displays the current number of characters in the input field.
+   * @param {undefined} No parameters required
+   * @returns {jQuery} The jQuery object for chaining
+   */
   $.fn.characterCounter = function () {
     return this.each(function () {
       var $input = $(this);
@@ -9231,6 +9541,12 @@ if (jQuery) {
     });
   };
 
+  /**
+   * Updates the character counter and applies input styling based on the input length.
+   * This function is typically used as an event handler for input fields with character limits.
+   * @param {void} - This function doesn't take any parameters directly, but relies on the context of 'this'.
+   * @returns {void} This function doesn't return a value.
+   */
   function updateCounter() {
     var maxLength = +$(this).attr('data-length'),
         actualLength = +$(this).val().length,
@@ -9241,6 +9557,11 @@ if (jQuery) {
     addInputStyle(isValidLength, $(this));
   }
 
+  /**
+   * Adds a character counter element to the parent of the input element if it doesn't already exist.
+   * @param {jQuery} $input - The jQuery object representing the input element.
+   * @returns {void} This method doesn't return a value.
+   */
   function addCounterElement($input) {
     var $counterElement = $input.parent().find('span[class="character-counter"]');
 
@@ -9257,6 +9578,12 @@ if (jQuery) {
     $(this).parent().find('span[class="character-counter"]').html('');
   }
 
+  /**
+   * Adds or removes CSS classes to style an input element based on its validity.
+   * @param {boolean} isValidLength - Indicates if the input has a valid length.
+   * @param {jQuery} $input - The jQuery object representing the input element.
+   * @returns {void} This method does not return a value.
+   */
   function addInputStyle(isValidLength, $input) {
     var inputHasInvalidClass = $input.hasClass('invalid');
     if (isValidLength && inputHasInvalidClass) {
@@ -9271,6 +9598,19 @@ if (jQuery) {
     $('input, textarea').characterCounter();
   });
 })(jQuery);
+/**
+ * Initializes a carousel component with various options and functionality.
+ * @param {Object} options - Configuration options for the carousel.
+ * @param {number} [options.duration=200] - Duration of the carousel animation in milliseconds.
+ * @param {number} [options.dist=-100] - Distance for zooming scale effect.
+ * @param {number} [options.shift=0] - Spacing for the center image.
+ * @param {number} [options.padding=0] - Padding between non-center items.
+ * @param {boolean} [options.fullWidth=false] - Whether to use full width styles.
+ * @param {boolean} [options.indicators=false] - Whether to show indicators.
+ * @param {boolean} [options.noWrap=false] - Whether to disable wrapping and cycling through items.
+ * @param {Function} [options.onCycleTo=null] - Callback function when a new slide is cycled to.
+ * @returns {jQuery} The jQuery object for chaining.
+ */
 ;(function ($) {
 
   var methods = {
@@ -9817,6 +10157,13 @@ if (jQuery) {
 ;(function ($) {
 
   var methods = {
+    /**
+     * Initializes a tap target element or performs open/close operations.
+     * This method sets up the tap target's structure, positioning, and event handlers.
+     * It can also be used to open or close an existing tap target.
+     * @param {Object|string} options - Configuration options or command ('open'/'close')
+     * @returns {jQuery} The jQuery object for chaining
+     */
     init: function (options) {
       return this.each(function () {
         var origin = $('#' + $(this).attr('data-activates'));
@@ -9992,6 +10339,12 @@ if (jQuery) {
     close: function () {}
   };
 
+  /**
+   * Initializes or calls a method on the jQuery tap-target plugin.
+   * @param {(string|object)} methodOrOptions - The method name to call or options object for initialization.
+   * @returns {jQuery} The jQuery object for chaining.
+   * @throws {Error} If the specified method does not exist.
+   */
   $.fn.tapTarget = function (methodOrOptions) {
     if (methods[methodOrOptions] || typeof methodOrOptions === 'object') return methods.init.apply(this, arguments);
 
