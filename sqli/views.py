@@ -33,16 +33,39 @@ async def index(request: Request):
     if request.method == 'POST':
         if auth_user:
             raise HTTPForbidden()
-        data = await request.post()
-        username = data['username']
-        password = data['password']
-        async with app['db'].acquire() as conn:
-            user = await User.get_by_username(conn, username)
-        if user and user.check_password(password):
-            session['user_id'] = user.id
-            auth_user = user
-        else:
-            errors.append('Invalid username or password')
+        try:
+            data = await request.post()
+            username = data['username']
+            password = data['password']
+            async with app['db'].acquire() as conn:
+                user = await User.get_by_username(conn, username)
+                
+            if user:
+                # Handle users with no salt (migration case)
+                if not user.pwd_salt:
+                    # This is a transitional case - in production you'd want 
+                    # to force a password reset instead
+                    pwd_hash, pwd_salt = User.hash_password(password)
+                    async with app['db'].acquire() as conn:
+                        async with conn.cursor() as cur:
+                            await cur.execute(
+                                'UPDATE users SET pwd_hash = %s, pwd_salt = %s WHERE id = %s',
+                                (pwd_hash, pwd_salt, user.id)
+                            )
+                    # Refresh user object with new hash and salt
+                    async with app['db'].acquire() as conn:
+                        user = await User.get_by_username(conn, username)
+                
+                if user.check_password(password):
+                    session['user_id'] = user.id
+                    auth_user = user
+                else:
+                    errors.append('Invalid username or password')
+            else:
+                errors.append('Invalid username or password')
+        except Exception as e:
+            log.error(f"Login error: {str(e)}")
+            errors.append('An error occurred during login')
     return {'last_visited': last_visited,
             'errors': errors,
             'auth_user': auth_user}
