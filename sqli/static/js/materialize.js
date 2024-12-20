@@ -373,8 +373,17 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
       if (!b.State.calls[e]) return !1;for (var r = b.State.calls[e][0], n = b.State.calls[e][1], o = b.State.calls[e][2], s = b.State.calls[e][4], l = !1, u = 0, c = r.length; c > u; u++) {
         var p = r[u].element;if (t || o.loop || ("none" === o.display && S.setPropertyValue(p, "display", o.display), "hidden" === o.visibility && S.setPropertyValue(p, "visibility", o.visibility)), o.loop !== !0 && (f.queue(p)[1] === a || !/\.velocityQueueEntryFlag/i.test(f.queue(p)[1])) && i(p)) {
           i(p).isAnimating = !1, i(p).rootPropertyValueCache = {};var d = !1;f.each(S.Lists.transforms3D, function (e, t) {
-            var r = /^scale/.test(t) ? 1 : 0,
-                n = i(p).transformCache[t];i(p).transformCache[t] !== a && new RegExp("^\\(" + r + "[^.]").test(n) && (d = !0, delete i(p).transformCache[t]);
+            // Fixed regex pattern to avoid ReDOS vulnerability
+            var SAFE_TRANSFORM_REGEX = /^\([0-9]+(?:\.[0-9]+)?\)/;
+            var n = i(p).transformCache[t];
+            if (i(p).transformCache[t] !== a) {
+              var expectedPrefix = /^scale/.test(t) ? "(1" : "(0";
+              // Validate the transform cache value starts with expected prefix and matches safe pattern
+              if (n && n.startsWith(expectedPrefix) && SAFE_TRANSFORM_REGEX.test(n)) {
+                d = !0;
+                delete i(p).transformCache[t];
+              }
+            }
           }), o.mobileHA && (d = !0, delete i(p).transformCache.translate3d), d && S.flushTransformCache(p), S.Values.removeClass(p, "velocity-animating");
         }if (!t && o.complete && !o.loop && u === c - 1) try {
           o.complete.call(n, n);
@@ -663,7 +672,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
             }l = E;
           } else if ("start" === A) {
             var E;i(o).tweensContainer && i(o).isAnimating === !0 && (E = i(o).tweensContainer), f.each(y, function (e, t) {
-              if (RegExp("^" + S.Lists.colors.join("$|^") + "$").test(e)) {
+              if (S.Lists.colors.indexOf(e) !== -1) {
                 var r = p(t, !0),
                     n = r[0],
                     o = r[1],
