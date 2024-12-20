@@ -21,5 +21,14 @@ async def _init_pg(app: Application):
 
 
 async def _close_pg(app: Application):
+    """Closes the PostgreSQL database connection associated with the application.
+    
+    Args:
+        app (Application): The application instance containing the database connection.
+    
+    Returns:
+        None: This method doesn't return anything.
+    
+    """
     app['db'].close()
     await app['db'].wait_closed()
