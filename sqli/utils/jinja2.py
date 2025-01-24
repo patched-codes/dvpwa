@@ -6,6 +6,15 @@ from sqli.utils.auth import get_auth_user
 
 
 async def csrf_processor(request):
+    """Generates a CSRF token processor for a web request.
+    
+    Args:
+        request: The incoming web request object.
+    
+    Returns:
+        dict: A dictionary containing a 'csrf_token' function that generates or retrieves a CSRF token.
+    
+    """
     session = await get_session(request)
 
     def csrf_token():
@@ -17,5 +26,14 @@ async def csrf_processor(request):
 
 
 async def auth_user_processor(request):
+    """Processes the authentication for a user based on the given request.
+    
+    Args:
+        request: The incoming request object containing user authentication information.
+    
+    Returns:
+        dict: A dictionary containing the authenticated user information.
+            - 'auth_user': The authenticated user object.
+    """
     auth_user = await get_auth_user(request)
     return {'auth_user': auth_user}
