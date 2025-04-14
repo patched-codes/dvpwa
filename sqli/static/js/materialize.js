@@ -374,7 +374,12 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
         var p = r[u].element;if (t || o.loop || ("none" === o.display && S.setPropertyValue(p, "display", o.display), "hidden" === o.visibility && S.setPropertyValue(p, "visibility", o.visibility)), o.loop !== !0 && (f.queue(p)[1] === a || !/\.velocityQueueEntryFlag/i.test(f.queue(p)[1])) && i(p)) {
           i(p).isAnimating = !1, i(p).rootPropertyValueCache = {};var d = !1;f.each(S.Lists.transforms3D, function (e, t) {
             var r = /^scale/.test(t) ? 1 : 0,
-                n = i(p).transformCache[t];i(p).transformCache[t] !== a && new RegExp("^\\(" + r + "[^.]").test(n) && (d = !0, delete i(p).transformCache[t]);
+                n = i(p).transformCache[t];
+                // Fixed ReDoS vulnerability by using a safer fixed pattern for numeric values
+                if (i(p).transformCache[t] !== a && /^\(\d+[^.]/.test(n)) {
+                    d = !0;
+                    delete i(p).transformCache[t];
+                }
           }), o.mobileHA && (d = !0, delete i(p).transformCache.translate3d), d && S.flushTransformCache(p), S.Values.removeClass(p, "velocity-animating");
         }if (!t && o.complete && !o.loop && u === c - 1) try {
           o.complete.call(n, n);
@@ -562,7 +567,22 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
         }, addClass: function (e, t) {
           e.classList ? e.classList.add(t) : e.className += (e.className.length ? " " : "") + t;
         }, removeClass: function (e, t) {
-          e.classList ? e.classList.remove(t) : e.className = e.className.toString().replace(new RegExp("(^|\\s)" + t.split(" ").join("|") + "(\\s|$)", "gi"), " ");
+          if (typeof t !== 'string' || t.length > 1000) { // reasonable maximum length
+              return;
+          }
+          if (e.classList) {
+              e.classList.remove(t);
+          } else {
+              // Safer fallback using string manipulation
+              const classNames = t.split(' ');
+              classNames.forEach(className => {
+                  // Escape special regex characters in the className
+                  const safeClassName = className.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  // Use a simpler, fixed-pattern regex
+                  const safePattern = new RegExp(`\\s*\\b${safeClassName}\\b\\s*`, 'g');
+                  e.className = e.className.replace(safePattern, ' ').trim();
+              });
+          }
         } }, getPropertyValue: function (e, r, n, o) {
         function s(e, r) {
           function n() {
@@ -663,7 +683,8 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
             }l = E;
           } else if ("start" === A) {
             var E;i(o).tweensContainer && i(o).isAnimating === !0 && (E = i(o).tweensContainer), f.each(y, function (e, t) {
-              if (RegExp("^" + S.Lists.colors.join("$|^") + "$").test(e)) {
+              const validColors = new Set(S.Lists.colors);
+              if (validColors.has(e)) {
                 var r = p(t, !0),
                     n = r[0],
                     o = r[1],
