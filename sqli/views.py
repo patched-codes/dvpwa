@@ -38,9 +38,22 @@ async def index(request: Request):
         password = data['password']
         async with app['db'].acquire() as conn:
             user = await User.get_by_username(conn, username)
-        if user and user.check_password(password):
-            session['user_id'] = user.id
-            auth_user = user
+        if user:
+            is_valid, new_hash = user.check_password(password)
+            if is_valid:
+                session['user_id'] = user.id
+                auth_user = user
+                
+                # Handle password upgrade if needed
+                if new_hash:
+                    async with app['db'].acquire() as conn:
+                        async with conn.cursor() as cur:
+                            await cur.execute(
+                                'UPDATE users SET pwd_hash = %s, pwd_version = %s WHERE id = %s',
+                                (new_hash, 'v2', user.id)
+                            )
+            else:
+                errors.append('Invalid username or password')
         else:
             errors.append('Invalid username or password')
     return {'last_visited': last_visited,
