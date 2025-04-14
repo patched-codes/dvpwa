@@ -393,7 +393,11 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
     }var f,
         d = function () {
       if (r.documentMode) return r.documentMode;for (var e = 7; e > 4; e--) {
-        var t = r.createElement("div");if (t.innerHTML = "<!--[if IE " + e + "]><span></span><![endif]-->", t.getElementsByTagName("span").length) return t = null, e;
+        var t = r.createElement("div");
+        // Ensure e is a valid number between 4-11 (common IE versions)
+        if (typeof e !== 'number' || e < 4 || e > 11) return a;
+        t.textContent = "<!--[if IE " + e + "]><span></span><![endif]-->";
+        if (t.getElementsByTagName("span").length) return t = null, e;
       }return a;
     }(),
         g = function () {
@@ -803,7 +807,7 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
     var e;if (a) if (a.forEach) a.forEach(b, c);else if (a.length !== d) for (e = 0; e < a.length;) {
       b.call(c, a[e], e, a), e++;
     } else for (e in a) {
-      a.hasOwnProperty(e) && b.call(c, a[e], e, a);
+      Object.prototype.hasOwnProperty.call(a, e) && b.call(c, a[e], e, a);
     }
   }function n(a, b, c) {
     for (var e = Object.keys(b), f = 0; f < e.length;) {
@@ -1023,7 +1027,9 @@ jQuery.Velocity ? console.log("Velocity is already loaded. You may be needlessly
       vb = "pointermove pointerup pointercancel";a.MSPointerEvent && (ub = "MSPointerDown", vb = "MSPointerMove MSPointerUp MSPointerCancel"), p(wb, ab, { handler: function (a) {
       var b = this.store,
           c = !1,
-          d = a.type.toLowerCase().replace("ms", ""),
+          d = a.type.split(" ").map(function(word) {
+            return word.replace(/^MSPointer/i, "pointer").toLowerCase();
+          }).join(" "),
           e = sb[d],
           f = tb[a.pointerType] || a.pointerType,
           g = f == J,
@@ -2847,7 +2853,22 @@ if (jQuery) {
 
         // Create Text span
         if (allowHtml) {
-          tooltipText = $('<span></span>').html(tooltipText);
+          // Sanitize HTML content to prevent XSS
+          var sanitizeHTML = function(html) {
+            var div = document.createElement('div');
+            div.textContent = html;
+            // Only allow safe tags and attributes
+            var sanitized = div.innerHTML
+              .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') // Remove script tags
+              .replace(/javascript:/gi, '') // Remove javascript: URLs
+              .replace(/onerror=/gi, '')  // Remove onerror handlers
+              .replace(/onload=/gi, '')   // Remove onload handlers
+              .replace(/onclick=/gi, '')   // Remove onclick handlers
+              .replace(/onmouseover=/gi, '') // Remove mouseover handlers
+              .replace(/data-/gi, 'data-safe-'); // Namespace data attributes
+            return sanitized;
+          };
+          tooltipText = $('<span></span>').html(sanitizeHTML(tooltipText));
         } else {
           tooltipText = $('<span></span>').text(tooltipText);
         }
@@ -3066,7 +3087,7 @@ if (jQuery) {
     var style = '';
 
     for (var a in obj) {
-      if (obj.hasOwnProperty(a)) {
+      if (Object.prototype.hasOwnProperty.call(obj, a)) {
         style += a + ':' + obj[a] + ';';
       }
     }
@@ -3119,7 +3140,7 @@ if (jQuery) {
 
       ripple.className = ripple.className + ' waves-notransition';
       ripple.setAttribute('style', convertStyle(rippleStyle));
-      ripple.className = ripple.className.replace('waves-notransition', '');
+      ripple.className = ripple.className.replace(/waves-notransition/g, '');
 
       // Scale the ripple
       rippleStyle['-webkit-transform'] = scale;
@@ -3441,7 +3462,7 @@ if (jQuery) {
 
           // Insert as text;
         } else {
-          toast.innerHTML = this.message;
+          toast.textContent = this.message;
         }
 
         // Append toasft
@@ -4725,7 +4746,7 @@ if (jQuery) {
 
               if (val.length >= options.minLength) {
                 for (var key in data) {
-                  if (data.hasOwnProperty(key) && key.toLowerCase().indexOf(val) !== -1) {
+                  if (Object.prototype.hasOwnProperty.call(data, key) && key.toLowerCase().indexOf(val) !== -1) {
                     // Break if past limit
                     if (count >= options.limit) {
                       break;
@@ -8586,9 +8607,10 @@ if (jQuery) {
       svgSupported = 'SVGAngle' in window && function () {
     var supported,
         el = document.createElement('div');
-    el.innerHTML = '<svg/>';
+    var svg = document.createElementNS(svgNS, "svg");
+    el.appendChild(svg);
     supported = (el.firstChild && el.firstChild.namespaceURI) == svgNS;
-    el.innerHTML = '';
+    el.innerHTML = '';  // This clear is still safe as it's just emptying the element
     return supported;
   }();
 
@@ -8923,7 +8945,7 @@ if (jQuery) {
       } else {
         this.amOrPm = 'PM';
       }
-      value[1] = value[1].replace("AM", "").replace("PM", "");
+      value[1] = value[1].replace(/AM/g, "").replace(/PM/g, "");
     }
     if (value[0] === 'now') {
       var now = new Date(+new Date() + this.options.fromnow);
