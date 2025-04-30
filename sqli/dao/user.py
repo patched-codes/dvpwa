@@ -38,4 +38,8 @@ class User(NamedTuple):
             return User.from_raw(await cur.fetchone())
 
     def check_password(self, password: str):
-        return self.pwd_hash == md5(password.encode('utf-8')).hexdigest()
+        from cryptography.hazmat.primitives import hashes
+    digest = hashes.Hash(hashes.SHA384())
+    digest.update(password.encode('utf-8'))
+    hashed_password = digest.finalize()
+    return self.pwd_hash == hashed_password.hex()
