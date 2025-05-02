@@ -39,9 +39,9 @@ class Student(NamedTuple):
 
     @staticmethod
     async def create(conn: Connection, name: str):
-        q = ("INSERT INTO students (name) "
-             "VALUES ('%(name)s')" % {'name': name})
+        q = "INSERT INTO students (name) VALUES ($1)"
+
         async with conn.cursor() as cur:
-            await cur.execute(q)
+            await cur.execute(q, name)
 
 
